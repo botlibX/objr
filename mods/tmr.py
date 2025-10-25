@@ -10,13 +10,11 @@ import re
 import time
 
 
-
+from objz.command import elapsed
+from objz.persist import find, write
 from objr.brokers import Fleet
 from objr.repeats import Timed, launch
-
-
-from objz.persist import find, write
-from objz.utility import elapsed, extract_date
+from objr.utility import extract_date
 
 
 def init():

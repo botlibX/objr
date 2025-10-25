@@ -13,17 +13,20 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from objz.command import Commands, Config, Event, command, modules, scanner
+from objz.command import Commands, Config, Event, command, scanner
+from objz.command import forever, level
 from objz.methods import parse
 from objz.objects import update
+from objz.package import Mods, inits, modules
 from objz.persist import Workdir
-from objz.utility import daemon, forever, inits, privileges, level, spl
 
 
 from objr.clients import Client
+from objr.utility import daemon, privileges, spl
 
 
 Config.name = "objr"
+Mods.dir("mods", "mods")
 Workdir.wdr = os.path.expanduser(f"~/.{Config.name}")
 
 
@@ -68,7 +71,7 @@ def background():
     privileges()
     boot(False)
     pidfile(pidname(Config.name))
-    inits("mods", "mods", spl(Config.init or Config.default))
+    inits(spl(Config.init or Config.default))
     forever()
 
 
@@ -80,15 +83,15 @@ def boot(doparse=True):
     if "v" in Config.opts:
         banner()
     if "a" in Config.opts:
-        Config.init = ",".join(modules("mods"))
+        Config.init = ",".join(modules())
     logging.info("workdir is %s", Workdir.wdr)
-    scanner("mods", "mods")
+    scanner()
 
 
 def console():
     import readline # noqa: F401
     boot()
-    for _mod, thr in inits("mods", "mods", spl(Config.init or Config.default)):
+    for _mod, thr in inits(spl(Config.init or Config.default)):
         if "w" in Config.opts:
             thr.join(30.0)
     csl = Console()
@@ -114,7 +117,7 @@ def service():
     boot(False)
     pidfile(pidname(Config.name))
     banner()
-    inits("mods", "mods", spl(Config.init or Config.default))
+    inits(spl(Config.init or Config.default))
     forever()
 
 

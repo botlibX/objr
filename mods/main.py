@@ -8,7 +8,7 @@ import json
 
 
 from objz.command import Commands, Config, scanner
-from objz.utility import md5sum
+from objr.utility import md5sum
 
 
 def cmd(event):

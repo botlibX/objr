@@ -13,9 +13,8 @@ from objr.brokers import Fleet
 from objr.repeats import Repeater
 
 
-from objz.command import Event
+from objz.command import Event, elapsed
 from objz.objects import Object, construct, keys
-from objz.utility import elapsed
 
 
 STARTTIME = time.time()

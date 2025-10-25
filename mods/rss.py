@@ -22,15 +22,14 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
+from objz.command import elapsed
+from objz.methods import fmt
+from objz.objects import Object, update
+from objz.persist import find, fntime, getpath, last, write
 from objr.brokers import Fleet
 from objr.repeats import Repeater
 from objr.threads import launch
-
-
-from objz.methods import fmt
-from objz.objects import Object, update
-from objz.persist import find, fntime, getpath, last, store, write
-from objz.utility import elapsed, spl
+from objr.utility import spl
 
 
 def init():
@@ -125,7 +124,7 @@ class Fetcher(Object):
                 result.append(fed)
             setattr(self.seen, feed.rss, urls)
             if not self.seenfn:
-                self.seenfn = getpath(store(), self.seen)
+                self.seenfn = getpath(self.seen)
             write(self.seen, self.seenfn)
         if silent:
             return counter
@@ -141,12 +140,12 @@ class Fetcher(Object):
 
     def run(self, silent=False):
         thrs = []
-        for _fn, feed in find(store(), "rss.Rss"):
+        for _fn, feed in find("rss.Rss"):
             thrs.append(launch(self.fetch, feed, silent))
         return thrs
 
     def start(self, repeat=True):
-        self.seenfn = last(store(), self.seen)
+        self.seenfn = last(self.seen)
         if repeat:
             repeater = Repeater(300.0, self.run)
             repeater.start()
@@ -360,7 +359,7 @@ def dpl(event):
         event.reply("dpl <stringinurl> <item1,item2>")
         return
     setter = {"display_list": event.args[1]}
-    for fnm, feed in find(store(), "rss.Rss", {"rss": event.args[0]}):
+    for fnm, feed in find("rss.Rss", {"rss": event.args[0]}):
         if feed:
             update(feed, setter)
             write(feed, fnm)
@@ -371,7 +370,7 @@ def exp(event):
     with importlock:
         event.reply(TEMPLATE)
         nrs = 0
-        for _fn, ooo in find(store(), "rss.Rss"):
+        for _fn, ooo in find("rss.Rss"):
             nrs += 1
             obj = Rss()
             update(obj, ooo)
@@ -404,7 +403,7 @@ def imp(event):
                 continue
             if not url.startswith("http"):
                 continue
-            has = list(find(store(), "rss.Rss", {"rss": url}, matching=True))
+            has = list(find("rss.Rss", {"rss": url}, matching=True))
             if has:
                 skipped.append(url)
                 nrskip += 1
@@ -426,7 +425,7 @@ def nme(event):
         event.reply("nme <stringinurl> <name>")
         return
     selector = {"rss": event.args[0]}
-    for fnm, fed in find(store(), "rss.Rss", selector):
+    for fnm, fed in find("rss.Rss", selector):
         feed = Rss()
         update(feed, fed)
         if feed:
@@ -439,7 +438,7 @@ def rem(event):
     if len(event.args) != 1:
         event.reply("rem <stringinurl>")
         return
-    for fnm, fed in find(store(), "rss.Rss"):
+    for fnm, fed in find("rss.Rss"):
         feed = Rss()
         update(feed, fed)
         if event.args[0] not in feed.rss:
@@ -455,7 +454,7 @@ def res(event):
     if len(event.args) != 1:
         event.reply("res <stringinurl>")
         return
-    for fnm, fed in find(store(), "rss.Rss", removed=True):
+    for fnm, fed in find("rss.Rss", removed=True):
         feed = Rss()
         update(feed, fed)
         if event.args[0] not in feed.rss:
@@ -469,7 +468,7 @@ def res(event):
 def rss(event):
     if not event.rest:
         nrs = 0
-        for fnm, fed in find(store(), "rss.Rss"):
+        for fnm, fed in find("rss.Rss"):
             nrs += 1
             elp = elapsed(time.time() - fntime(fnm))
             txt = fmt(fed)
@@ -481,7 +480,7 @@ def rss(event):
     if "http://" not in url and "https://" not in url:
         event.reply("i need an url")
         return
-    for fnm, result in find(store(), "rss.Rss", {"rss": url}):
+    for fnm, result in find("rss.Rss", {"rss": url}):
         if result:
             event.reply(f"{url} is known")
             return

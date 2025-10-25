@@ -19,11 +19,10 @@ from objr.clients import Output
 from objr.threads import launch
 
 
-from objz.command import Config, Event, command
+from objz.command import LEVELS, Config, Event, command
 from objz.methods import edit, fmt
 from objz.objects import Object, keys
 from objz.persist import Workdir, getpath, last, write
-from objz.utility import LEVELS
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"] 
