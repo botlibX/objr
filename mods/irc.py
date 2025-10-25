@@ -9,6 +9,7 @@ import logging
 import os
 import socket
 import ssl
+import sys
 import textwrap
 import threading
 import time
@@ -16,13 +17,9 @@ import time
 
 from objr.brokers import Fleet
 from objr.clients import Output
+from objr.persist import edit, getpath, keys, last, write
 from objr.threads import launch
-
-
-from objz.command import LEVELS, Config, Event, command
-from objz.methods import edit, fmt
-from objz.objects import Object, keys
-from objz.persist import Workdir, getpath, last, write
+from objr.utility import fmt
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"] 
@@ -30,6 +27,14 @@ IGNORE = ["PING", "PONG", "PRIVMSG"]
 
 initlock = threading.RLock()
 saylock  = threading.RLock()
+
+
+def getmain():
+   return sys.modules["__main__"]
+
+
+Config = getattr(getmain(), 'Config', None)
+Event = getattr(getmain(), 'Event', None)
 
 
 def init():
@@ -87,10 +92,12 @@ class Event(Event):
         self.arguments = []
         self.command = ""
         self.channel = ""
+        self.gets = {}
         self.nick = ""
         self.origin = ""
         self.rawstr = ""
         self.rest = ""
+        self.sets = {}
         self.txt = ""
 
     def dosay(self, txt):
@@ -483,7 +490,6 @@ class IRC(Output):
         self.state.lastline = splitted[-1]
 
     def start(self):
-        last("mods", self.cfg)
         if self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
         self.events.ready.clear()
@@ -600,7 +606,7 @@ def cb_quit(evt):
 
 def cfg(event):
     config = Config()
-    fnm = last("mods", config)
+    fnm = last(config)
     if not event.sets:
         event.reply(
             fmt(
@@ -612,6 +618,7 @@ def cfg(event):
     else:
         edit(config, event.sets)
         write(config, fnm or getpath(config))
+        event.reply("ok")
 
 
 def mre(event):

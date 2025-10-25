@@ -9,9 +9,9 @@ import threading
 import _thread
 
 
-from .brokers import Fleet
-from .handler import Handler
-from .threads import launch
+from objr.brokers import Fleet
+from objr.handler import Handler
+from objr.threads import launch
 
 
 class Client(Handler):

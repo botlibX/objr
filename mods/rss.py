@@ -22,14 +22,11 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from objz.command import elapsed
-from objz.methods import fmt
-from objz.objects import Object, update
-from objz.persist import find, fntime, getpath, last, write
+
 from objr.brokers import Fleet
-from objr.repeats import Repeater
-from objr.threads import launch
-from objr.utility import spl
+from objr.persist import Object, find, fntime, getpath, last, update, write
+from objr.threads import Repeater, launch
+from objr.utility import elapsed, fmt, spl
 
 
 def init():

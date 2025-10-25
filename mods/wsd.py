@@ -11,10 +11,8 @@ from random import SystemRandom
 
 
 from objr.brokers import Fleet
-from objr.repeats import Repeater
-
-
-from objz.command import Event
+from objr.handler import Event
+from objr.threads import Repeater
 
 
 rand = SystemRandom()
