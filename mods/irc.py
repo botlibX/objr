@@ -15,11 +15,10 @@ import threading
 import time
 
 
-from objr.brokers import Fleet
-from objr.clients import Output
-from objr.persist import edit, getpath, keys, last, write
-from objr.threads import launch
-from objr.utility import fmt
+from objr.command import command
+from objr.handler import Fleet, Output
+from objr.persist import Object, edit, fmt, getpath, keys, last, write
+from objr.threads import LEVELS, launch
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"] 

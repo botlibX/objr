@@ -13,10 +13,8 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
+from objr.persist import Object
 from objr.threads import launch
-
-
-from objr.objects import Object
 
 
 d = os.path.dirname

@@ -1,9 +1,9 @@
 # This file is placed in the Public Domain.
 
 
-from objr.clients import Fleet
+from objr.handler import Fleet
+from objr.persist import fmt
 from objr.threads import name
-from objr.methods import fmt
 
 
 def flt(event):

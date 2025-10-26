@@ -13,9 +13,8 @@ import _thread
 
 
 from objr.handler import Client, Default, Event, Fleet
-from objr.persist import Workdir, pidname
+from objr.persist import Workdir, fmt, pidname
 from objr.threads import launch, level
-from objr.utility import daemon, fmt, parse, pidfile, privileges, spl
 
 
 STARTTIME = time.time()
@@ -208,15 +207,9 @@ def parse(obj, txt):
         obj.txt = obj.cmd or ""
 
 
-def spl(txt):
-    try:
-        result = txt.split(",")
-    except (TypeError, ValueError):
-        result = [
-            txt,
-        ]
-    return [x for x in result if x]
-
+def setattrs(obj, data):
+    for k, v in data.items():
+        setattr(obj, k, getattr(obj, k, v))
 
 
 def __dir__():

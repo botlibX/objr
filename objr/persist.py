@@ -79,6 +79,31 @@ def fqn(obj):
     return kin
 
 
+def fmt(obj, args=[], skip=[], plain=False, empty=False):
+    if not args:
+        args = obj.__dict__.keys()
+    txt = ""
+    for key in args:
+        if key.startswith("__"):
+            continue
+        if key in skip:
+            continue
+        value = getattr(obj, key, None)
+        if value is None:
+            continue
+        if not empty and not value:
+            continue
+        if plain:
+            txt += f"{value} "
+        elif isinstance(value, str):
+            txt += f'{key}="{value}" '
+        elif isinstance(value, (int, float, dict, bool, list)):
+            txt += f"{key}={value} "
+        else:
+            txt += f"{key}={name(value, True)} "
+    return txt.strip()
+
+
 def ident(obj):
     return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
 
@@ -311,7 +336,6 @@ def write(obj, path=None):
             dump(obj, fpt, indent=4)
         Cache.update(path, obj)
         return path
-
 
 
 def __dir__():

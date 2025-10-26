@@ -7,9 +7,8 @@
 import time
 
 
-from objr.command import elapsed
-from objr.persist import find, fntime, write
-from objr.objects import Object
+from objr.persist import Object, find, fntime, write
+from objr.utility import elapsed
 
 
 class Todo(Object):

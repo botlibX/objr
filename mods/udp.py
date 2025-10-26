@@ -12,11 +12,9 @@ import threading
 import time
 
 
-from objr.brokers import Fleet
+from objr.handler import Fleet
+from objr.persist import Object
 from objr.threads import launch
-
-
-from objr.objects import Object
 
 
 DEBUG = False

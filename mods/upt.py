@@ -7,10 +7,8 @@
 import time
 
 
-from objr.command import elapsed
-
-
-STARTTIME = time.time()
+from objr.command import STARTTIME
+from objr.utility import elapsed
 
 
 def upt(event):

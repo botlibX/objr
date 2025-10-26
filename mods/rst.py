@@ -13,10 +13,8 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
+from objr.persist import Object, store, types
 from objr.threads import launch
-
-from objr.objects import Object
-from objr.persist import store, types
 
 
 DEBUG = False

@@ -4,7 +4,7 @@
 "enable silence mode"
 
 
-from objr.brokers import Fleet
+from objr.handler import Fleet
  
 
 def sil(event):
