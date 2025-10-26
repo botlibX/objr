@@ -16,7 +16,7 @@ from objr.brokers import Fleet
 from objr.threads import launch
 
 
-from objz.objects import Object
+from objr.objects import Object
 
 
 DEBUG = False

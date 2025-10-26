@@ -3,7 +3,7 @@
 
 from objr.clients import Fleet
 from objr.threads import name
-from objz.methods import fmt
+from objr.methods import fmt
 
 
 def flt(event):

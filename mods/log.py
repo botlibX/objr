@@ -7,9 +7,9 @@
 import time
 
 
-from objz.command import elapsed
-from objz.persist import find, fntime, write
-from objz.objects import Object
+from objr.command import elapsed
+from objr.persist import find, fntime, write
+from objr.objects import Object
 
 
 class Log(Object):

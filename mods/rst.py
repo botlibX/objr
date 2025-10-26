@@ -15,8 +15,8 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 from objr.threads import launch
 
-from objz.objects import Object
-from objz.persist import store, types
+from objr.objects import Object
+from objr.persist import store, types
 
 
 DEBUG = False

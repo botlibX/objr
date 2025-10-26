@@ -7,7 +7,7 @@
 import time
 
 
-from objz.command import elapsed
+from objr.command import elapsed
 
 
 STARTTIME = time.time()

@@ -9,10 +9,10 @@ import os
 import time
 
 
-from objz.command import elapsed
-from objz.persist import find, write
-from objz.methods import fmt
-from objz.objects import Object, keys, update
+from objr.command import elapsed
+from objr.persist import find, write
+from objr.methods import fmt
+from objr.objects import Object, keys, update
 from objr.utility import extract_date, spl
 
 

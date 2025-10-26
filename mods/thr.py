@@ -8,7 +8,7 @@ import threading
 import time
 
 
-from objz.command import elapsed
+from objr.command import elapsed
 
 
 STARTIME = time.time()

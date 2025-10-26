@@ -16,7 +16,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from objr.threads import launch
 
 
-from objz.objects import Object
+from objr.objects import Object
 
 
 d = os.path.dirname

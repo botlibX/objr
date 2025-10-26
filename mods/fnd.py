@@ -7,9 +7,9 @@
 import time
 
 
-from objz.command import elapsed
-from objz.methods import fmt
-from objz.persist import find, fntime, skel, store, types
+from objr.command import elapsed
+from objr.methods import fmt
+from objr.persist import find, fntime, skel, store, types
 
 
 def fnd(event):
