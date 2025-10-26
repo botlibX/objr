@@ -10,12 +10,11 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from objr.command import Commands, Config, Mods, command, inits, scanner
-from objr.command import modules, parse
+from objr.command import Commands, Config, Mods
+from objr.command import command, inits, modules, parse, scanner
 from objr.handler import Client, Event
 from objr.persist import Workdir, pidname
 from objr.threads import level
-from objr.utility import spl
  
 
 "clients"
@@ -182,6 +181,16 @@ def privileges():
     pwnam2 = pwd.getpwnam(getpass.getuser())
     os.setgid(pwnam2.pw_gid)
     os.setuid(pwnam2.pw_uid)
+
+
+def spl(txt):
+    try:
+        result = txt.split(",")
+    except (TypeError, ValueError):
+        result = [
+            txt,
+        ]
+    return [x for x in result if x]
 
 
 "runtime"

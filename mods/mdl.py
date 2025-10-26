@@ -13,10 +13,7 @@ import time
 from objr.handler import Event, Fleet
 from objr.persist import Object, construct, keys
 from objr.threads import Repeater
-from objr.utility import elapsed
-
-
-STARTTIME = time.time()
+from .            import STARTTIME, elapsed
 
 
 def init():

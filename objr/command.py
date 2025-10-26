@@ -17,9 +17,6 @@ from objr.persist import Workdir, fmt, pidname
 from objr.threads import launch, level
 
 
-STARTTIME = time.time()
-
-
 class Config:
 
     debug = False

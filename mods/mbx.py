@@ -10,7 +10,7 @@ import time
 
 
 from objr.persist import Object, fmt, keys, read, write, update
-from objr.utility import elapsed, extract_date, spl
+from .            import elapsed, extract_date, spl
 
 
 class Email(Object):

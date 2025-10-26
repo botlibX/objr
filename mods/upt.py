@@ -7,8 +7,7 @@
 import time
 
 
-from objr.command import STARTTIME
-from objr.utility import elapsed
+from . import STARTTIME, elapsed
 
 
 def upt(event):

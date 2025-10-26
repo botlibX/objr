@@ -8,7 +8,7 @@ import time
 
 
 from objr.persist import Object, find, fntime, write
-from objr.utility import elapsed
+from .            import elapsed
 
 
 class Log(Object):

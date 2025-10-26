@@ -8,7 +8,7 @@ import time
 
 
 from objr.persist import find, fmt, fntime, skel, store, types
-from objr.utility import elapsed
+from .            import elapsed
 
 
 def fnd(event):
