@@ -4,7 +4,7 @@
 "available types"
 
 
-from objr.persist import types
+from objz.persist import types
 
 
 def lst(event):

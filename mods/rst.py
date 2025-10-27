@@ -13,8 +13,9 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from objr.persist import Object, store, types
-from objr.threads import launch
+from objz.objects import Object
+from objz.persist import store, types
+from objz.threads import launch
 
 
 DEBUG = False
