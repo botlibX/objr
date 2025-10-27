@@ -5,75 +5,188 @@
 "objects"
 
 
+import inspect
 import os
 import shutil
 import sys
+import threading
 import time
 
 
 sys.path.insert(0, os.getcwd())
 
 
-from objz.command import Commands, Config, Event, Mods, command, parse, scanner
-from objz.methods import fmt, ident
-from objz.objects import Object
-from objz.persist import Workdir, find, fntime, getpath, read, skel, types, write
-from objz.utility import elapsed, launch
+from objr.clients import Client
+from objr.handler import Event
+from objr.command import Config, command, parse, scanner
+from objr.package import Mods
+from objz.persist import Workdir
+from objz.threads import launch, name
+from objz.repeats import elapsed
 
 
-Mods.dir("mods", "mods")
+path = inspect.getfile(Config)
+Mods.dirs["mods"] = "mods"
 Workdir.wdr = ".test"
 
 
 events = []
 examples = {
     "cmd": [""],
+    "dis": [""],
     "dne": ["", "test2"],
+    "dpl": ["hnrss title,url", ""],
+    "flt": [""],
+    "fnd": ["", "log", "rss", "config", "todo"],
     "log": ["", "test"],
-    "fnd": ["", "log", "todo"],
-    "tdo": ["", "test2", "test3"]
+    "man": [""],
+    "mod": [""],
+    "mre": [""],
+    "nme": ["", "hnrss hackernews"],
+    "now": [""],
+    "pwd": ["", "bla mekker"],
+    "req": [""],
+    "res": ["", "hnrss"],
+    "srv": [""],
+    "tdo": ["", "test2", "test3"],
+    "thr": [""],
+    "upt": [""]
 }
 
 
-class Event(Event):
+pre = {
+    "cfg": ["", "nick=mekker"],
+    "imp": ["", "tests/feeds.opml"],
+    "log": ["", "bla"],
+    "rss": ["","http://hnrss.org/newest"],
+    "tdo": ["", "mekker"]
+}
 
-    def dosay(self, txt):
-        print(txt)
+
+post = {
+    "dne": ["", "hnrss"],
+    "exp": [""],
+    "rem": ["", "hnrss"]
+}
 
 
-def payload():
-        for cmd, example in examples.items():
-            for ex in example:
-                evt = Event()
-                evt.txt = f"{cmd} {ex}"
-                command(evt)
-                events.append(evt)
+class CLI(Client):
+
+    def __init__(self):
+        Client.__init__(self)
+        self.register("command", command)
+
+    def raw(self, txt):
+        if "v" in Config.opts:
+            print(txt)
+
+
+
+class Pool:
+
+    clients = []
+    lock = threading.RLock()
+    nrcpu = 1
+    nrlast = 0
+
+    @staticmethod
+    def add(clt):
+        "add client to pool."
+        Pool.clients.append(clt)
+
+    @staticmethod
+    def init(clz, nr=None):
+        "initialize client pool."
+        Pool.nrcpu = nr or os.cpu_count()
+        for _x in range(Pool.nrcpu):
+            clt = clz()
+            clt.start()
+            Pool.add(clt)
+
+    @staticmethod
+    def put(evt):
+        "dispatch to client."
+        with Pool.lock:
+            if Pool.nrlast >= Pool.nrcpu-1:
+                Pool.nrlast = 0
+            clt = Pool.clients[Pool.nrlast]
+            clt.put(evt)
+            Pool.nrlast += 1
+
+
+def banner():
+    tme = time.ctime(time.time()).replace("  ", " ")
+    print("%s %s since %s (%s)" % (Config.name.upper(), Config.version, tme, Config.level.upper()))
+
+
+def payload(todo):
+    for cmd, example in todo.items():
+        for ex in example:
+            evt = Event()
+            evt.txt = f"{cmd} {ex}"
+            evt.type = "command"
+            Pool.put(evt)
+            events.append(evt)
+
 
 def main():
     parse(Config, " ".join(sys.argv[1:]))
-    nr = Config.index or 100
+    if "v" in Config.opts:
+        banner()
+    nr = Config.index or 1
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
+    if "z" in Config.opts:
+        Pool.init(CLI)
+    else:
+        Pool.init(CLI, 1)
     scanner()
     starttime = time.time()
     thrs = []
     for _x in range(nr):
-        thrs.append(launch(payload))
+        thrs.append(launch(payload, pre))
+    for _x in range(nr):
+        thrs.append(launch(payload, examples))
+    for _x in range(nr):
+        thrs.append(launch(payload, post))
     for thr in thrs:
         thr.join()
+    gotcha = []
     for evt in events:
         evt.wait()
+        gotcha.append(evt)
+    nrevents = len(events)
+    for evt in gotcha:
+        events.remove(evt)
     endtime = time.time()
     lap = elapsed(endtime-starttime)
-    nrevents = len(events)
     percall = (endtime-starttime)/nrevents
     if "v" in Config.opts:
-        print(f"debug is {Mods.debug}")
-        print(f"{nrevents} events left.")
+        print(f"{len(events)} events left.")
         print(f"total: {lap} nrs: {nr} call: %.6fs" % percall)
     sys.exit()
 
 
+def wrapped(func):
+    try:
+        func()
+    except (KeyboardInterrupt, EOFError):
+        print("")
+
+
+def wrap(func):
+    import termios
+    old = None
+    try:
+        old = termios.tcgetattr(sys.stdin.fileno())
+    except termios.error:
+        pass
+    try:
+        wrapped(func)
+    finally:
+        if old:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+
+
 if __name__ == "__main__":
-    main()
-    
+    wrap(main)
